@@ -1,0 +1,622 @@
+
+INSTALACION
+$ npm init -y para que se me cree el package json por defecto
+
+{
+  "name": "typescripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+
+$ npm i typescript --save-dev para instalar typescript
+
+$ npm tsc --version para ver su version instalada
+
+$ npx tsc --init para iniciar el proyecto de typescript
+deja EL PROYECTOI PRECONFIGURADO
+
+$npm i ts-node -D
+
+$ npx tsc para transpilar el codigo
+
+$ npx tsc --watch para dejarlo como escuha constante y de esta manera se abre un servidor activo
+
+
+con ts-node nos ahorramos el proceso de transpilar
+
+nos permite correr typescript desde el lado de node sobre todo en un backend. En conclusion nos srive para ejecutar un archivo de type 
+sript directamente
+
+$ npx ts-node src/demo.ts ejecuto el archivo elegido con esta libreria 
+
+
+
+**************************************************************
+ENUMS
+Es un tipo que me deja definir un conjunto de opciones
+Los enums funcionan como listas en las que podemos agregar llaves y valores. Esto lo que nos permite es tener un set de opciones 
+predefinidas, evitando pasar un argumento invalido, ya que solo vamos a tener las opciones dentro del enum. Estos se usan de la siguiente 
+manera
+
+enum ROLES {
+  ADMIN = "admin",
+  USER = "user",
+  OWNER = "owner"
+}
+
+otro Ejemplo
+
+export enum ROLES {
+  ADMIN = 'admin',
+  SELLER = 'seller',
+  CUSTOMER = 'customer',
+}
+
+export type User = {
+  username: String;
+  role: ROLES;
+};
+
+const nicoUser:User={
+    username:"nicotypes",
+    role:ROLES.ADMIN
+}
+
+NEVERTIME
+
+El tipo de dato never, m�s que todo sirve para tipar a una funci�n que nunca va a finalizar o sencillamente que pueda terminar el programa en el caso de llamar una excepci�n.
+
+Un ejemplo de ello es cuando queremos manejar un error o cuando ejecutamos un loop infinito, como por ejemplo una validaci�n de un token de cada x�s segundos, que es una funci�n que se ejecuta constantemente, ya que lanzas la funci�n, esta env�a el token lo valida, y comienza el timer para hacer el refresh de ese token, si hay un error lanza una excepci�n y si no contin�a con la validaci�n y el timer�
+
+Se utiliza para funciones que sabemnos que nuca van a terminar
+
+Ejemplo: 
+
+const withouEnd=()=>{
+    while(true){
+        console.log("hola")
+    }
+}
+
+Si se acerca con el mouse a la funcion typescript me se�alara que esta funcion es una funcion NEVER, imprimiendome lo siguiente 
+
+function withouEnd:()=>never
+
+Estas funciones se pueden forzar a que se detengan con un trow new Error
+
+Ejemplo: 
+
+const fail = (message: string) => {
+  throw new Error(message);
+};
+
+const example = (input: unknown) => {
+  if (typeof input === 'string') {
+    return 'es un string';
+  } else if (Array.isArray(input)) {
+    return 'es un array';
+  }
+  return fail('not match');
+};
+
+console.log(example("hola"))
+console.log(example([1,2,3,4]))
+console.log(example(1123)) //aqui se detiene el programa
+console.log(example("hola despues del fail"))
+console.log(example("hola despues del fail"))
+
+
+PARAMETROS OPCIONALES Y NULLISH-COALESCING
+
+export const createProduct = (
+  id: string | number
+  isNew?: boolean, 
+  stock?: number 
+) => {
+  return {
+    id,
+    isNew,
+    stock,
+  };
+};
+
+PARAMETRO OPCIONAL (?) permite NO dejar                   como obligatorio al parametro
+
+const p1=createProduct(2,false,200)
+console.log(p1)
+//{ id: 2, isNew: false, stock: 200 }
+
+const p2=createProduct(2)
+console.log(p2)
+//{ id: 2, isNew: undefined, stock: undefined }
+
+NULLISH-COALESCING
+
+Para evitar estos undefined y que se asignen valores por defecto en caso de que no se les inserte ninguno se utiliza ?? en el return
+
+//{ id: 2, isNew: undefined, stock: undefined }
+
+  return {
+    id,
+    isNew: isNew ?? 10,
+    stock: stock ?? true
+  };
+
+Por tanto en el console log al invocar la constante 
+
+const p2=createProduct(2)
+console.log(p2)
+{ id: 2, isNew: 10, stock: true }
+
+
+PARAMETROS REST
+
+Otra caracteristica de typescript es la posibilidad de pasar valores una lista indefinida de valores y que los reciba un vector 
+el parametro rest se logra antecediendo tres puntos al nombre del paramatro
+
+function sumar(...valores:number[]){
+let suma=0
+for(let x;valores.length;x++){
+suma+=valores[x]
+}
+return suma
+}
+
+console.log(10,2,5) //17
+console.log(2)//2
+console.log(2,5,6,1,1)//15
+
+import {User,ROLES} from "xxxxx"
+
+const currentUser:User={
+username:"walter",
+role:ROLES.CUSTOMER
+
+}
+
+
+export const checkRole=(...roles:string [])=>{
+if(roles.includes(currentUser.role)){
+return true
+}
+return false
+}
+
+const rpta=checkRole(ROLES.ADMIN,ROLES,SELLER)
+console.log(rpta)
+
+LA FUNCION CON UN PARAMETRO REST PUEDE TENER OTROS PARAMETROS PERO SE DEBEN DECLARAR ANTES
+LOS PARAMETROS REST NO PUEDEN TENER VALORES POR DEFECTO
+
+SOBRECARGA DE FUNCIONES
+
+Problema con el retorno de funciones
+Cuando tenemos una funci�n que retorna m�s de un solo tipo de dato y a ese resultado lo queremos utilizar en otra parte de nuestro programa, 
+no vamos a poder usarlo como tal, ya que TypeScript no sabe que tipo de dato se retorn� realmente.
+
+TypeScript al no saber el tipo de dato que se retorn� en una funci�n que puede retornar m�s de un tipo de dato, somos nosotros los 
+responsables en decirle el tipo de dato resultante de la funci�n para as� poder operar con el resultado de forma normal.
+
+Esto implica que en el retorno de un array por ejemplo, si en el mismo se quisiera hacer uso de una de sus funciones como ser P�SH, 
+previamente seria necesario preguntar si tal retorno es un array
+
+const rta=parseStr("Walter")
+if(Array.isArray(rta)){
+  rtaArray.reverse()
+}
+
+Es decir no podria hacer uso de reverse() antes de poreguntar si primero es un array
+
+Uso de la sobrecarga de funciones
+Se suele emplear mucho en librer�as, pero depende mucho de tu proyecto y de las ventajas que te puede llegar a dar.
+
+La sobre carga de funciones �nicamente suelen darse con las funciones declarativas con la palabra reservada function.
+
+
+export function parseStr(input:string):string[]
+export function parseStr(input:string[]):string
+
+
+export function parseStr(input:unknown):unknown{
+    if(Array.isArray(input)){
+        return input.join("")
+    }
+    else if(typeof input ==="string")
+        return input.split("") 
+}
+
+
+const rtaArray=parseStr(["w","a","l","t","e","r"])
+console.log(rtaArray) // walter
+
+INTERFACES
+
+Diferencias entre type e interface
+Con type yo puedo definir tipos primitivos o directos (declaraciones cortas y puntuales), mientras que una interface necesita todo un cuerpo.
+A interface lo usamos para un conjunto de atributos de valores.
+Interface tiene la particularidad de que se puede extender, mientras que los type no.
+
+**************BaseModel.ts*************
+export interface BaseModel{
+    id:string,
+    createdAt:Date,
+    updatedAt:Date
+}
+
+***************product-service.ts***************
+
+import { Product } from "./product-model";
+
+export const products: Product[] = [];
+
+export const addProduct = (data: Product) => {
+  products.push(data);
+};
+
+
+*************product-mode.ts*****************
+
+import {Category} from "./../categories/category-model"
+import { BaseModel } from "../basemodel";
+export type Size="S"|"M"|"XX";
+
+
+export interface Product extends BaseModel{
+
+title:string;
+size?:Size;
+stock:number;
+category:Category; 
+}
+
+****************category.ts***************
+import { BaseModel } from "../basemodel";
+
+export interface Category extends BaseModel{
+    
+    name:string
+}
+
+******************Main*****************
+import { addProduct } from "./products/product-service";
+
+addProduct({
+    id:"1",
+    title:"orden1",
+    createdAt:new Date(),
+    updatedAt:new Date(),
+    stock:90,
+    category:{
+        id:"575",
+        name:"c1",
+        createdAt:new Date(),
+        updatedAt:new Date()
+    }
+
+})
+
+readonly en TS
+
+Como su nombre lo indica, este feature de TS nos ayuda a tener ciertos atributos solo de lectura. Lo que significa que no pueden ser 
+modificados. Un buen caso de uso es el id y el createdAt.
+
+interface BaseModel {
+  readonly id: string | number;
+  readonly createdAt: Date;
+  updatedAt: Date;
+}
+
+
+Ejemplo:
+
+export interface FindProductDto extends Readonly<Partial<Product>>{}
+
+en este caso al interface FindProductDto se lo coloca como Readonly y Partial, de manera de que todos los parametros sean opcionaes y no 
+modificables, de esta manera se pueden ocupar en las funciones de busqueda sin necesidad de que se solicite que se pongan todos los campos 
+obligatoriamente y sin que se permitea editar ese parametro que se esta buscando, ya que no tendria sentido tampoco
+
+
+DTO utilty types
+
+Estos tipos de datos nos permiten crear nuevas interfaces basadas de otras, pero omitiendo o seleccionando solo ciertos valores. Estos 
+funcionan de la siguiente forma
+
+interface Employee {
+    name: string;
+    lastName: string;
+    salary: number;
+    company: string
+}
+
+interface Unemployee extends Omit<Employee, 'salary', 'company'> {}
+
+Con Pick funciona de la misma manera, solo que se eligen ciertos valores en vez de omitirlos
+
+Un DTO significa. Data Transfer Objects (Objetos de transferencia de datos).
+
+Entre ellos tenemos el Omit y el Pick, as� que explicar� cada uno por separado.
+
+Omit
+Como su nombre lo indica, omit es omitir, por ello nos ayuda a omitir ciertos valores que vamos a recibir de un tipo o de una interface.
+
+interface Product {
+	id: number,
+	name: string,
+	color: string,
+	description: string,
+	model: string,
+	country: string,
+}
+
+interface ProductModified extends Product Omit<Product, 'country'> {
+	categoryId: string
+}
+//Extendemos la interface product, realizamos el omit, y agregamos un nuevo valor
+// a esa interface que seria el categoryId
+
+Pick
+
+A diferencia del Omit que omitimos campos, en el pick, lo que haremos es escoger los campos, un uso m�s correcto de esto es imaginar 
+que tenemos un tipo o una interfaz con much�simos campos, pero sencillamente necesitamos 3 campos de 20 que tienen. Entonces lo id�neo
+ es usar el pick, en vez de omitir 17 campos.
+
+interface Product {
+	id: number,
+	name: string,
+	color: string,
+	description: string,
+	model: string,
+	country: string,
+}
+
+interface ProductModified extends Product Pick<Product, 'id', 'number'> {
+	categoryId: string
+}
+
+Partial y Required
+
+Estos dos tipos de datos nos sirven para declarar que todos los campos de una interfaz son opcionales u obligatorios.
+
+En el caso de PARTIAL al invocar a una funcionalidad de modificar. Es probable que se quiera solo modificar un campo y no varios, para 
+evitar tener que poner a todos los campos como campos opcionales con el (?) utilizamos PARTIAL
+
+
+*****************MAIN********************
+updateProduct(products[0].id,{
+    title:"orden2"
+})
+
+****************UPDATEDTO******************
+export  interface UpdateProductDto extends Partial<Product>{}
+
+*****************PRODUCT-SERVICE*******************
+
+
+export const updateProduct=(id:string,changes:UpdateProductDto):Product=>{
+const index=products.findIndex(item=>item.id===id)
+const prevData=products[index]
+products[index]={
+  ...prevData,
+  ...changes
+}
+return products[index]
+}
+
+REQUIRED: Por otra parte hace lo contrario, deja a todos como campos obligatorios
+
+Acceso del Tipado por Indice
+
+Podemos acceder al tipado de una interface por media de bracket notation, al colocar una propiedad entre comillas dentro de los brackets 
+vamos a obtener por resultado el tipo de dato que tiene esa propiedad.
+
+Al colocar el tipo de dato de esta forma nos evitamos los dolores de cabeza cuando se nos cambien alg�n tipo de dato de nuestra interface 
+por alguna raz�n.
+
+***********************antes***********************
+export const updateProduct=(id:string,changes:UpdateProductDto):Product=>{
+const index=products.findIndex(item=>item.id===id)
+const prevData=products[index]
+products[index]={
+  ...prevData,
+  ...changes
+}
+return products[index]
+}
+
+**********************despues**********************
+export const updateProduct=(id:Product["id"],changes:UpdateProductDto):Product=>{
+const index=products.findIndex(item=>item.id===id)
+const prevData=products[index]
+products[index]={
+  ...prevData,
+  ...changes
+}
+return products[index]
+}
+En este caso serviria colocar como parametro el tipado x Indice de manera de que si por alguna razon en el Model el id que era un string 
+lo cambian a Number, entonces tendria que acceder a todas las funciones y cambiar manualmente cada funcion id:String a id:number. Con el 
+tipado por indice se modificaria automaticamente
+
+ReadonlyArray 
+
+Es un tipo de dato que evita las mutaciones de los arrays. Es decir 
+
+cont arrPrueba: ReadonlyArray<number> = [1,2,3,4,5]
+
+En este caso arrPrueba no puede ocupar metodos  como push, porp, etc pero si ocupar metodos como .map()
+
+
+--------------------------------------
+
+
+
+
+
+Las interfaces y los types cumplen la misma funci�n, solo que las interfaces se pueden extender.
+ verdadero elegi
+
+
+ReadonlyArray previene que use m�todos de los arrays que puedan crear mutaciones. verdadero elegi
+
+�Cu�l es la manera correcta de extender de una interface?
+
+interface mymodel extends basemodel{
+} elegi
+
+
+�Es posible dentro de una interface tener elementos anidados?
+
+verdadro elegi
+
+�Cu�l de los siguientes tipos me deja definir un conjunto de opciones?
+
+
+�Cu�l es la manera correcta de definir un valor por defecto en una funci�n?
+
+const myfuncion=(a?10)=>a INCORREECTO
+
+
+correcto
+
+const myfunction=(a:number=10)=>{
+return a
+}
+
+Si tengo la siguiente interface:
+
+interface Product { id: number; title: string, size?: Sizes; }
+
+Y quiero crear un nuevo tipo eligiendo ciertos campos, �cu�l ser�a el Utility Type apropiado?
+
+p�ck elegi
+
+
+PROGRAMACION ORIENTA A OBJETOS
+
+�Qu� es class?
+
+JavaScript es un lenguaje orientado a objetos, pero est� basado en prototipos.
+Las clases son una sintaxis m�s amigable para trabajar con prototipos, las clases internamente son prototipos.
+La utilizamos para construir instancias de objetos, es como un molde para crear cosas.
+Buenas pr�cticas
+Es una buena pr�ctica inicializar las propiedades que coloquemos en nuestra clase, ya sea por fuera o dentro de nuestro constructor.
+�Qu� quiere decir acceso p�blico?
+Esto quiere decir que podemos acceder a las propiedades y m�todos del objeto desde el exterior.
+
+Public
+
+�Qu� quiere decir acceso p�blico?
+
+Esto quiere decir que podemos acceder a las propiedades y m�todos del objeto desde el exterior
+
+Por defecto, todas las propiedades y m�todos son p�blicos pero si queremos aclarar en nuestro c�digo el alcance de los mismos podemos 
+utilizar la palabra reservada public.
+
+class nameClass {
+		public parameter1: dataType;
+		constructor (parameters) { statements }
+
+		public method (parameters): dataType { statements }
+}
+
+##############################################################
+                           PRIVATE
+##############################################################
+
+                     �Qu� quiere decir?
+--------------------------------------------------------------
+Podemos proteger nuestras propiedades y m�todos para que nos sean accedidos y modificados por fuera de clase.
+
+Con esta palabra reservada private estamos restringiendo el acceso de nuestros par�metros y m�todos, solo podr�n ser accedidos o 
+modificados dentro de la clase.
+--------------------------------------------------------------
+                          EJEMPLO
+--------------------------------------------------------------
+class nameClass {
+		private parameter1: dataType;
+		constructor (parameters) { statements }
+
+		private method (parameters): dataType { statements }
+}
+
+
+##############################################################
+                         CONSTRUCTOR
+##############################################################
+
+Es el constructor en el que construimos la instancia y mandamos los par�metros por defecto por el cual queremos que se inicialice esa
+ instancia a un objeto
+
+De esta forma estar�amos definiendo y asignando las propiedades de una manera corta.
+
+Cabe destacar que debemos de aclarar o ser expl�citos con el alcance de las propiedades, caso contario no podremos usar esta caracter�stica 
+de TypeScript adem�s que no podremos usar esa propiedad a lo largo de la clase, ya que su scope solo se ver� limitado al constructor.
+
+--------------------------------------------------------------
+                          EJEMPLO 1
+--------------------------------------------------------------
+
+class ClassName {
+		property1: dataType;
+		propertyN: dataType;
+		constructor (property1: dataType, propertyN: dataType) {
+				this.proterty1 = property1;
+				this.protertyN = propertyN;
+		}
+}
+
+--------------------------------------------------------------
+                          EJEMPLO 2
+--------------------------------------------------------------
+
+class ClassName {
+		constructor (
+				scope property1: dataType, 
+				scope propertyN: dataType
+		) {
+				statements
+		}
+}
+
+--------------------------------------------------------------
+                EJEMPLO 3 (con valores por defecto)
+--------------------------------------------------------------
+
+
+class ClassName {
+		constructor (
+				public year: number=2022, 
+				public month: number=12
+		) {}
+}
+
+
+##############################################################
+                         GETTERS
+##############################################################
+
+Con get podemos acceder a una propiedad con un alcance privado, podemos obtener los datos de esa propiedad pero no modificarlos o mutarlos.
+
+Lo podemos acceder como si fuese una propiedad más de la instancia.
+
+Por definición, todos los getters tienen que retornar algo.
+
+
+
+
+
+$ npx ts-node ReplaceActivitySigner
+
+
+
+
+
+
+
