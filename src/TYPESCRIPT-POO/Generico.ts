@@ -15,4 +15,4 @@ getValue<string>("prueba").charAt
 getValue<number[]>([3,54,6]).forEach
 
 //ESTE ES N EJMPLO DE GENERICO APLICADO A UN METODO
-//PAR AAPLICARLO A UNA CLASE VER EL ARCHIVO base-http.service
+//PARA APLICARLO A UNA CLASE VER EL ARCHIVO base-http.service

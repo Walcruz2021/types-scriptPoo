@@ -1,3 +1,6 @@
+
+//SE EJECUTA EN MAIN3.TS
+
 import axios from 'axios';
 import { UpdateProductDto, CreateProductDto } from '../dto/product.dto';
 import { Product } from '../model/product';

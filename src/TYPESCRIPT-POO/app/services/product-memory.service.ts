@@ -1,3 +1,7 @@
+//ESTA CLASE SOLO TRABAJA DE MANERA LOCAL 
+//ES DECIR PRODUCT-HTTP.SERVICE ES EL QUE NOS SIRVE DE MEJOR MANERA
+
+
 import { faker } from '@faker-js/faker';
 import { Product } from '../model/product';
 import { CreateProductDto, UpdateProductDto } from '../dto/product.dto';

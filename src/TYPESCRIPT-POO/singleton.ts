@@ -3,11 +3,12 @@
 // Esto es muy usado en Arquitectura de Software, pues nos ayuda a ahorrar uso de memoria.
 
 //EJEMPLO DE USO
-// Hola, por ejemplo para una Clase maneja la conexión a una base de datos. Imagina que quieres tener solo 100 conexiones disponibles y 
+// por ejemplo para una Clase maneja la conexión a una base de datos. Imagina que quieres tener solo 100 conexiones disponibles y 
 //estas se crean cuando se crean la instancia de la clase la primera vez.
 // Podría pasar que si creas una nueva instancia de la clase se crean 100 conexiones mas ( buscar productos 100 + editar producto 100 …) 
 //hasta que la base de datos deje de responder.
-// Otra cosa interesante es que los objetos ocupan memoria ram y podrías estar creando objetos muy grandes muchas veces innecesariamente y quedarte si memoria ram y que la app muera.
+// Otra cosa interesante es que los objetos ocupan memoria ram y podrías estar creando objetos muy grandes muchas veces innecesariamente 
+//y quedarte si memoria ram y que la app muera.
 
 
 export class PruebaSingleton {
